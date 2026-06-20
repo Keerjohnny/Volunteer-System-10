@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Volunteer Program
+</title>
+
+<link rel="stylesheet"
+href="/css/program.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<section class="program-page">
+
+<div class="program-container">
+
+<div class="program-header">
+
+<h1>
+Education Support Program
+</h1>
+
+<p>
+Help students improve learning skills,
+reading abilities, and academic performance.
+Make a meaningful impact in the lives of children.
+</p>
+
+</div>
+
+<div class="program-grid">
+
+<div class="program-card">
+
+<i class="fa-solid fa-circle-info"></i>
+
+<h2>
+Program Details
+</h2>
+
+<ul>
+
+<li>Mode: Offline / Online</li>
+
+<li>Duration: 3 Months</li>
+
+<li>Hours: 4 Hours Per Week</li>
+
+<li>Location: Bangalore</li>
+
+</ul>
+
+</div>
+
+<div class="program-card">
+
+<i class="fa-solid fa-list-check"></i>
+
+<h2>
+Requirements
+</h2>
+
+<ul>
+
+<li>Age 18+</li>
+
+<li>Good Communication Skills</li>
+
+<li>Passion For Teaching</li>
+
+<li>Positive Attitude</li>
+
+</ul>
+
+</div>
+
+<div class="program-card">
+
+<i class="fa-solid fa-briefcase"></i>
+
+<h2>
+Responsibilities
+</h2>
+
+<ul>
+
+<li>Assist Students</li>
+
+<li>Conduct Learning Sessions</li>
+
+<li>Support Educational Activities</li>
+
+<li>Track Student Progress</li>
+
+</ul>
+
+</div>
+
+<div class="program-card">
+
+<i class="fa-solid fa-award"></i>
+
+<h2>
+Benefits
+</h2>
+
+<ul>
+
+<li>Volunteer Certificate</li>
+
+<li>Experience Letter</li>
+
+<li>Leadership Skills</li>
+
+<li>Networking Opportunities</li>
+
+</ul>
+
+</div>
+
+</div>
+
+<div class="apply-section">
+
+<a href="/success"
+class="apply-btn">
+
+Apply Now
+
+</a>
+
+<a href="/"
+class="back-btn">
+
+Back To Home
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const programName = params.get("name") || "Education Support";
+  
+  fetch(`/api/program?name=${encodeURIComponent(programName)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.program) {
+        const prog = data.program;
+        
+        // Update header
+        document.querySelector(".program-header h1").textContent = prog.program_name + " Program";
+        document.querySelector(".program-header p").textContent = prog.description;
+        
+        // Update Apply Now button behavior based on auth state
+        fetch("/api/auth/me")
+          .then(res => res.json())
+          .then(auth => {
+            const applyBtn = document.querySelector(".apply-btn");
+            if (applyBtn) {
+              if (!auth.loggedIn) {
+                // Not logged in -> redirect to login with this page as redirect target
+                applyBtn.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+              } else {
+                // Logged in -> call apply API on click
+                applyBtn.href = "#";
+                applyBtn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  
+                  // Disable button to prevent double submit
+                  applyBtn.textContent = "Applying...";
+                  applyBtn.style.pointerEvents = "none";
+                  applyBtn.style.opacity = "0.7";
+                  
+                  fetch("/api/volunteer/apply", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ program_name: prog.program_name })
+                  })
+                  .then(res => res.json())
+                  .then(applyResult => {
+                    if (applyResult.success) {
+                      window.location.href = "/success";
+                    } else {
+                      alert("Error: " + applyResult.message);
+                      applyBtn.textContent = "Apply Now";
+                      applyBtn.style.pointerEvents = "auto";
+                      applyBtn.style.opacity = "1";
+                    }
+                  })
+                  .catch(err => {
+                    console.error("Error applying:", err);
+                    alert("An error occurred. Please try again.");
+                    applyBtn.textContent = "Apply Now";
+                    applyBtn.style.pointerEvents = "auto";
+                    applyBtn.style.opacity = "1";
+                  });
+                });
+              }
+            }
+          })
+          .catch(err => console.error("Error fetching auth state:", err));
+        
+        // Update details card (mode, duration, hours, location)
+        const detailsList = document.querySelector(".program-grid .program-card:nth-child(1) ul");
+        detailsList.innerHTML = `
+          <li><strong>Mode:</strong> ${prog.mode || 'Offline / Online'}</li>
+          <li><strong>Duration:</strong> ${prog.duration || '3 Months'}</li>
+          <li><strong>Hours:</strong> ${prog.hours || '4 Hours Per Week'}</li>
+          <li><strong>Location:</strong> ${prog.location || 'Bangalore'}</li>
+        `;
+        
+        // Helper to format comma or newline separated items as <li>
+        const formatList = (text) => {
+          if (!text) return '';
+          return text
+            .split(/[,\n]/)
+            .map(item => item.trim())
+            .filter(item => item.length > 0)
+            .map(item => `<li>${item}</li>`)
+            .join('');
+        };
+        
+        // Update Requirements Card
+        document.querySelector(".program-grid .program-card:nth-child(2) ul").innerHTML = formatList(prog.requirements);
+        
+        // Update Responsibilities Card
+        document.querySelector(".program-grid .program-card:nth-child(3) ul").innerHTML = formatList(prog.responsibilities);
+        
+        // Update Benefits Card
+        document.querySelector(".program-grid .program-card:nth-child(4) ul").innerHTML = formatList(prog.benefits);
+      }
+    })
+    .catch(err => console.error("Error fetching program details:", err));
+});
+</script>
+
+</body>
+
+</html>

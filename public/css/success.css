@@ -1,0 +1,60 @@
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f4f7fb;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.success-card{
+background:white;
+padding:50px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,.1);
+max-width:600px;
+}
+
+.success-card h1{
+color:#28a745;
+margin-bottom:20px;
+}
+
+.success-card p{
+line-height:1.8;
+margin-bottom:30px;
+}
+
+.success-actions{
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.home-btn,
+.profile-btn,
+.logout-btn{
+padding:15px 30px;
+text-decoration:none;
+border-radius:10px;
+font-weight:600;
+}
+
+.home-btn,
+.profile-btn{
+background:#0F4C81;
+color:white;
+}
+
+.profile-btn{
+background:#00A8E8;
+}
+
+.logout-btn{
+border:1px solid #ef4444;
+color:#ef4444;
+background:white;
+}

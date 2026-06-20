@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Volunteer Login</title>
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/login.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<section class="login-page">
+
+<div class="login-container">
+
+<div class="login-left">
+
+<h1>
+Welcome Back
+</h1>
+
+<p>
+Login to access your volunteer account,
+track your activities, and continue making
+a difference in your community.
+</p>
+
+<div class="login-features">
+
+<div>
+
+<i class="fa-solid fa-user-group"></i>
+
+Volunteer Dashboard
+
+</div>
+
+<div>
+
+<i class="fa-solid fa-award"></i>
+
+Track Achievements
+
+</div>
+
+<div>
+
+<i class="fa-solid fa-handshake-angle"></i>
+
+Community Engagement
+
+</div>
+
+<div>
+
+<i class="fa-solid fa-heart"></i>
+
+Social Impact
+
+</div>
+
+</div>
+
+</div>
+
+<div class="login-right">
+
+<h2>
+Volunteer Login
+</h2>
+
+<div id="login-message" class="auth-message" style="display:none;"></div>
+
+<form action="/login" method="POST">
+
+<input
+type="email"
+name="email"
+placeholder="Email Address"
+required>
+
+<input
+type="password"
+name="password"
+placeholder="Password"
+required>
+
+<button type="submit">
+
+Login Now
+
+</button>
+
+</form>
+
+<p class="register-link">
+
+Don't have an account?
+
+<a href="/register">
+
+Register Here
+
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+    const registered = params.get("registered");
+    const loginMessage = document.getElementById("login-message");
+
+    if (registered && loginMessage) {
+      loginMessage.textContent = "Registration successful. Please login to open the volunteer portal.";
+      loginMessage.style.display = "block";
+    }
+
+    if (redirect) {
+      // Append redirect to form action
+      const form = document.querySelector("form");
+      form.action = `/login?redirect=${encodeURIComponent(redirect)}`;
+      
+      // Update the register link to carry the program parameter if applicable
+      const registerLink = document.querySelector(".register-link a");
+      if (registerLink) {
+        const redirectParams = new URLSearchParams(redirect.substring(redirect.indexOf('?')));
+        const program = redirectParams.get("name");
+        if (program) {
+          registerLink.href = `/register?program=${encodeURIComponent(program)}`;
+        } else {
+          registerLink.href = `/register?redirect=${encodeURIComponent(redirect)}`;
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+
+</html>

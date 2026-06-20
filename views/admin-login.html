@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Admin Login
+</title>
+
+<link rel="stylesheet"
+href="/css/admin.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<section class="admin-login-page">
+
+<div class="admin-login-container">
+
+<div class="admin-left">
+
+<h1>
+Admin Panel
+</h1>
+
+<p>
+Manage volunteers, applications, programs,
+and monitor activities from one dashboard.
+</p>
+
+<div class="admin-features">
+
+<div>
+<i class="fa-solid fa-users"></i>
+Manage Volunteers
+</div>
+
+<div>
+<i class="fa-solid fa-file-circle-check"></i>
+View Applications
+</div>
+
+<div>
+<i class="fa-solid fa-chart-line"></i>
+Track Statistics
+</div>
+
+<div>
+<i class="fa-solid fa-gear"></i>
+Manage Programs
+</div>
+
+</div>
+
+</div>
+
+<div class="admin-right">
+
+<h2>
+Admin Login
+</h2>
+
+<form action="/admin-login" method="POST">
+
+<input
+type="text"
+name="username"
+placeholder="Admin Username"
+required>
+
+<input
+type="password"
+name="password"
+placeholder="Admin Password"
+required>
+
+<button type="submit">
+
+Login
+
+</button>
+
+</form>
+
+<p class="back-home">
+
+<a href="/">
+← Back To Home
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+</body>
+
+</html>

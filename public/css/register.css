@@ -1,0 +1,226 @@
+.register-page{
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+padding:120px 8%;
+
+background:
+linear-gradient(135deg, rgba(15,76,129,.92), rgba(0,168,232,.88)),
+url("https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1600&q=80");
+
+background-size:cover;
+
+background-position:center;
+
+}
+
+.register-container{
+
+max-width:1200px;
+
+width:100%;
+
+display:grid;
+
+grid-template-columns:
+1fr 1fr;
+
+background:white;
+
+border-radius:18px;
+
+overflow:hidden;
+
+box-shadow:
+0 22px 55px rgba(15,23,42,.22);
+
+}
+
+.register-left{
+
+padding:60px;
+
+background:
+linear-gradient(
+135deg,
+rgba(15,76,129,.94),
+rgba(0,168,232,.88)
+);
+
+color:white;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+}
+
+.register-left h1{
+
+font-size:3rem;
+
+margin-bottom:20px;
+
+}
+
+.register-left p{
+
+line-height:1.8;
+
+margin-bottom:30px;
+
+}
+
+.feature-list div{
+
+margin-bottom:18px;
+
+font-size:1.05rem;
+
+}
+
+.feature-list i{
+
+margin-right:10px;
+
+}
+
+.register-right{
+
+padding:56px 50px;
+
+background:#ffffff;
+
+}
+
+.register-right h2{
+
+text-align:center;
+
+margin-bottom:25px;
+
+color:#0F4C81;
+
+font-size:2rem;
+
+}
+
+.register-right form{
+
+display:flex;
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+.register-right input{
+
+padding:15px 16px;
+
+border:1px solid #cbd5e1;
+
+border-radius:12px;
+
+font-size:15px;
+
+outline:none;
+
+transition:.3s;
+
+box-shadow:0 10px 22px rgba(15,76,129,.18);
+
+}
+
+.register-right input:focus{
+
+border-color:#00A8E8;
+
+box-shadow:
+0 0 10px rgba(0,168,232,.2);
+
+}
+
+.register-right button{
+
+padding:15px;
+
+border:none;
+
+background:#0F4C81;
+
+color:white;
+
+font-size:16px;
+
+font-weight:600;
+
+border-radius:12px;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.register-right button:hover{
+
+background:#00A8E8;
+
+transform:translateY(-2px);
+
+}
+
+.login-link{
+
+text-align:center;
+
+margin-top:20px;
+
+}
+
+.login-link a{
+
+color:#00A8E8;
+
+font-weight:600;
+
+}
+
+@media(max-width:900px){
+
+.register-page{
+
+padding:40px 5%;
+
+}
+
+.register-container{
+
+grid-template-columns:
+1fr;
+
+}
+
+.register-left{
+
+display:none;
+
+}
+
+.register-right{
+
+padding:36px 24px;
+
+}
+
+}

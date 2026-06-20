@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Profile - NayePankh Portal</title>
+  <link rel="stylesheet" href="/css/profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <i class="fa-solid fa-handshake-angle"></i> NayePankh
+    </a>
+    <div class="nav-right">
+      <a href="/" class="btn-home"><i class="fa-solid fa-arrow-left"></i> Back to Portal</a>
+      <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- PROFILE MAIN CONTENT -->
+  <div class="profile-container">
+    
+    <!-- LEFT CARD - AVATAR & NAME -->
+    <div class="profile-card-left">
+      <div class="avatar-container" id="profile-avatar">
+        U
+      </div>
+      <h2 id="profile-name">Loading...</h2>
+      <p class="email" id="profile-email">loading@email.com</p>
+      
+      <div class="badge-joined">
+        <i class="fa-solid fa-calendar-days"></i> Joined NayePankh
+      </div>
+    </div>
+
+    <!-- RIGHT CARD - DETAILS -->
+    <div class="profile-card-right">
+      
+      <!-- PERSONAL DETAILS -->
+      <div class="card-section">
+        <h3><i class="fa-solid fa-circle-user"></i> Personal Details</h3>
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Phone Number</label>
+            <span id="profile-phone">-</span>
+          </div>
+          <div class="detail-item">
+            <label>City</label>
+            <span id="profile-city">-</span>
+          </div>
+          <div class="detail-item" style="grid-column: span 2;">
+            <label>Skills & Expertises</label>
+            <span id="profile-skills">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOLUNTEERING APPLICATION STATUS -->
+      <div class="card-section">
+        <h3><i class="fa-solid fa-clipboard-list"></i> Application Status</h3>
+        
+        <div id="no-application" style="display: none; text-align: center; padding: 20px 0;">
+          <p style="color: #64748b; margin-bottom: 20px; font-size: 1rem;">You haven't applied for any volunteer programs yet.</p>
+          <a href="/#programs" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; background: #0f4c81; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; transition: background 0.3s;" onmouseover="this.style.background='#00a8e8'" onmouseout="this.style.background='#0f4c81'">
+            <i class="fa-solid fa-compass"></i> Explore Volunteer Programs
+          </a>
+        </div>
+
+        <div id="has-application" class="application-block" style="display: none;">
+          <div class="status-row" id="status-card-border">
+            <div class="status-info">
+              <h4 id="app-program-name">Program Name</h4>
+              <p>Application submitted to Admin team</p>
+            </div>
+            <div class="status-badge-large" id="app-status-badge">
+              Pending
+            </div>
+          </div>
+          
+          <div class="status-message" id="app-status-message">
+            Thank you for applying! An administrator will review your application shortly.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Fetch user profile data
+      fetch("/api/auth/me")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.loggedIn) {
+            // Not logged in -> redirect to login
+            window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+            return;
+          }
+
+          const user = data.user;
+          
+          // Populate profile details
+          document.getElementById("profile-avatar").textContent = user.name ? user.name.charAt(0).toUpperCase() : "V";
+          document.getElementById("profile-name").textContent = user.name;
+          document.getElementById("profile-email").textContent = user.email;
+          document.getElementById("profile-phone").textContent = user.phone || "Not Provided";
+          document.getElementById("profile-city").textContent = user.city || "Not Provided";
+          document.getElementById("profile-skills").textContent = user.skills || "None Listed";
+
+          // Populate application details
+          if (!user.program_name) {
+            document.getElementById("no-application").style.display = "block";
+            document.getElementById("has-application").style.display = "none";
+          } else {
+            document.getElementById("no-application").style.display = "none";
+            document.getElementById("has-application").style.display = "block";
+            
+            document.getElementById("app-program-name").textContent = user.program_name;
+            
+            const badge = document.getElementById("app-status-badge");
+            const borderCard = document.getElementById("status-card-border");
+            const msgCard = document.getElementById("app-status-message");
+            
+            const userStatus = user.status || "Registered";
+            badge.textContent = userStatus;
+            
+            // Apply status specific styling
+            const status = userStatus.toLowerCase();
+            if (status === "pending") {
+              badge.className = "status-badge-large badge-pending";
+              borderCard.className = "status-row status-pending";
+              msgCard.className = "status-message msg-pending";
+              msgCard.textContent = "Thank you for applying! An administrator will review your program requirements and credentials shortly.";
+            } else if (status === "approved") {
+              badge.className = "status-badge-large badge-approved";
+              borderCard.className = "status-row status-approved";
+              msgCard.className = "status-message msg-approved";
+              msgCard.textContent = "Congratulations! Your volunteer application has been approved. The program coordinator will contact you via email or phone with logistics.";
+            } else {
+              badge.className = "status-badge-large badge-rejected";
+              borderCard.className = "status-row status-rejected";
+              msgCard.className = "status-message msg-rejected";
+              msgCard.textContent = "Your volunteer application for this program was not approved at this time. You can choose to apply for another program or update your skills.";
+            }
+          }
+        })
+        .catch(err => {
+          console.error("Error loading profile:", err);
+          window.location.href = "/login";
+        });
+    });
+  </script>
+</body>
+</html>

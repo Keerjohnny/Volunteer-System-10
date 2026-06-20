@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - NayePankh</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+        <li><a href="#" id="menu-dashboard" class="menu-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="#" id="menu-volunteers" class="menu-link" onclick="switchTab('volunteers')"><i class="fa-solid fa-users"></i> Volunteers</a></li>
+        <li><a href="#" id="menu-applications" class="menu-link" onclick="switchTab('applications')"><i class="fa-solid fa-file-circle-check"></i> Applications</a></li>
+        <li><a href="#" id="menu-contacts" class="menu-link" onclick="switchTab('contacts')"><i class="fa-solid fa-envelope-open-text"></i> Contacts & Reports</a></li>
+        <li><a href="#" id="menu-programs" class="menu-link" onclick="switchTab('programs')"><i class="fa-solid fa-gear"></i> Programs</a></li>
+        <li><a href="/admin/logout" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      
+      <!-- DASHBOARD PANEL -->
+      <div id="panel-dashboard" class="content-panel">
+        <h1>Dashboard Overview</h1>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fa-solid fa-users"></i>
+            <h2 id="stat-total-volunteers">0</h2>
+            <p>Total Volunteers</p>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-file-circle-check"></i>
+            <h2 id="stat-pending-applications">0</h2>
+            <p>Pending Applications</p>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-city"></i>
+            <h2 id="stat-cities-covered">0</h2>
+            <p>Cities Covered</p>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-star"></i>
+            <h2 id="stat-programs-joined">0</h2>
+            <p>Program Applications</p>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-envelope"></i>
+            <h2 id="stat-contact-messages">0</h2>
+            <p>New Contact Messages</p>
+          </div>
+        </div>
+
+        <h2 class="table-title">Recent Registrations</h2>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Skills</th>
+                <th>Program</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recent-volunteers-table">
+              <tr>
+                <td colspan="8" class="loading-td">Loading recent registrations...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VOLUNTEERS PANEL -->
+      <div id="panel-volunteers" class="content-panel" style="display: none;">
+        <h1>Registered Volunteers</h1>
+        <p style="margin-bottom: 20px; color: #64748b;">View and manage all registered volunteers.</p>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Skills</th>
+                <th>Program</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="all-volunteers-table">
+              <tr>
+                <td colspan="9" class="loading-td">Loading volunteers...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- APPLICATIONS PANEL -->
+      <div id="panel-applications" class="content-panel" style="display: none;">
+        <h1>Pending Applications</h1>
+        <p style="margin-bottom: 20px; color: #64748b;">Approve or Reject pending volunteer signups.</p>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Skills</th>
+                <th>Program</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="applications-table">
+              <tr>
+                <td colspan="8" class="loading-td">Loading applications...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CONTACTS & REPORTS PANEL -->
+      <div id="panel-contacts" class="content-panel" style="display: none;">
+        <div class="panel-header-row">
+          <div>
+            <h1>Contact Messages & Reports</h1>
+            <p style="margin-bottom: 20px; color: #64748b;">Messages submitted by logged-in volunteers for admin follow-up.</p>
+          </div>
+          <a href="/api/admin/contact-messages/report" class="btn-report">
+            <i class="fa-solid fa-file-csv"></i> Download CSV Report
+          </a>
+        </div>
+
+        <div class="report-grid">
+          <div class="report-card">
+            <span>Total Messages</span>
+            <strong id="report-total-contacts">0</strong>
+          </div>
+          <div class="report-card">
+            <span>New</span>
+            <strong id="report-new-contacts">0</strong>
+          </div>
+          <div class="report-card">
+            <span>Contacted</span>
+            <strong id="report-contacted-contacts">0</strong>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="contact-messages-table">
+              <tr>
+                <td colspan="9" class="loading-td">Loading contact messages...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PROGRAMS PANEL -->
+      <div id="panel-programs" class="content-panel" style="display: none;">
+        <h1>Manage Programs</h1>
+        <p style="margin-bottom: 25px; color: #64748b;">Edit requirements, responsibilities, and details for volunteer programs.</p>
+
+        <div class="programs-list-grid" id="programs-list">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Edit Program Section -->
+        <div id="edit-program-container" class="edit-program-card" style="display: none;">
+          <h2 id="edit-program-title">Edit Program Details</h2>
+          <form id="edit-program-form">
+            <input type="hidden" id="edit-program-id" name="id">
+            
+            <div class="form-group">
+              <label for="edit-program-name">Program Name</label>
+              <input type="text" id="edit-program-name" disabled class="disabled-input">
+            </div>
+
+            <div class="form-group">
+              <label for="edit-description">Description</label>
+              <textarea id="edit-description" name="description" rows="3" required></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="edit-mode">Mode (e.g. Offline / Online)</label>
+                <input type="text" id="edit-mode" name="mode" required>
+              </div>
+              <div class="form-group">
+                <label for="edit-duration">Duration (e.g. 3 Months)</label>
+                <input type="text" id="edit-duration" name="duration" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="edit-hours">Hours (e.g. 4 Hours Per Week)</label>
+                <input type="text" id="edit-hours" name="hours" required>
+              </div>
+              <div class="form-group">
+                <label for="edit-location">Location</label>
+                <input type="text" id="edit-location" name="location" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-requirements">Requirements (comma-separated or one per line)</label>
+              <textarea id="edit-requirements" name="requirements" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-responsibilities">Responsibilities (comma-separated or one per line)</label>
+              <textarea id="edit-responsibilities" name="responsibilities" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-benefits">Benefits (comma-separated or one per line)</label>
+              <textarea id="edit-benefits" name="benefits" rows="3" required></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+              <button type="button" class="btn-cancel" onclick="cancelEdit()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let allProgramsData = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Initial data fetch
+      refreshDashboardData();
+    });
+
+    function switchTab(tabId) {
+      // Update sidebar links
+      document.querySelectorAll(".menu-link").forEach(link => {
+        link.classList.remove("active");
+      });
+      document.getElementById(`menu-${tabId}`).classList.add("active");
+
+      // Hide all panels
+      document.querySelectorAll(".content-panel").forEach(panel => {
+        panel.style.display = "none";
+      });
+      // Show clicked panel
+      document.getElementById(`panel-${tabId}`).style.display = "block";
+
+      // Load specific tab data
+      if (tabId === 'dashboard') {
+        refreshDashboardData();
+      } else if (tabId === 'volunteers') {
+        loadVolunteers();
+      } else if (tabId === 'applications') {
+        loadApplications();
+      } else if (tabId === 'contacts') {
+        loadContactMessages();
+      } else if (tabId === 'programs') {
+        loadPrograms();
+      }
+    }
+
+    function refreshDashboardData() {
+      // Fetch Stats
+      fetch("/api/admin/stats")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById("stat-total-volunteers").textContent = data.stats.totalVolunteers;
+            document.getElementById("stat-pending-applications").textContent = data.stats.pendingApplications;
+            document.getElementById("stat-cities-covered").textContent = data.stats.citiesCovered;
+            document.getElementById("stat-programs-joined").textContent = data.stats.programsJoined;
+            document.getElementById("stat-contact-messages").textContent = data.stats.contactMessages;
+          }
+        })
+        .catch(err => console.error("Error loading stats:", err));
+
+      // Fetch Recent Registrations
+      fetch("/api/admin/volunteers")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const tableBody = document.getElementById("recent-volunteers-table");
+            tableBody.innerHTML = "";
+            const recent = data.volunteers.slice(0, 5); // Limit to 5
+            
+            if (recent.length === 0) {
+              tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No registered volunteers found.</td></tr>`;
+              return;
+            }
+
+            recent.forEach(v => {
+              const status = v.status || "Registered";
+              const statusClass = `status-${status.toLowerCase()}`;
+              tableBody.innerHTML += `
+                <tr>
+                  <td>${v.id}</td>
+                  <td><strong>${v.name}</strong></td>
+                  <td>${v.email}</td>
+                  <td>${v.phone}</td>
+                  <td>${v.city}</td>
+                  <td>${v.skills}</td>
+                  <td><span class="program-badge" style="background:#e0f7fa; color:#0f4c81; padding:4px 8px; border-radius:4px; font-size:0.85rem; font-weight:600;">${v.program_name || 'Not Applied'}</span></td>
+                  <td><span class="status-badge ${statusClass}">${status}</span></td>
+                </tr>
+              `;
+            });
+          }
+        })
+        .catch(err => console.error("Error loading recent registrations:", err));
+    }
+
+    function loadVolunteers() {
+      fetch("/api/admin/volunteers")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const tableBody = document.getElementById("all-volunteers-table");
+            tableBody.innerHTML = "";
+            
+            if (data.volunteers.length === 0) {
+              tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center;">No volunteers found.</td></tr>`;
+              return;
+            }
+
+            data.volunteers.forEach(v => {
+              const status = v.status || "Registered";
+              const statusClass = `status-${status.toLowerCase()}`;
+              tableBody.innerHTML += `
+                <tr>
+                  <td>${v.id}</td>
+                  <td><strong>${v.name}</strong></td>
+                  <td>${v.email}</td>
+                  <td>${v.phone}</td>
+                  <td>${v.city}</td>
+                  <td>${v.skills}</td>
+                  <td><span class="program-badge" style="background:#e0f7fa; color:#0f4c81; padding:4px 8px; border-radius:4px; font-size:0.85rem; font-weight:600;">${v.program_name || 'Not Applied'}</span></td>
+                  <td><span class="status-badge ${statusClass}">${status}</span></td>
+                  <td>
+                    <button class="btn-action btn-danger" onclick="deleteVolunteer(${v.id})" title="Delete Volunteer">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              `;
+            });
+          }
+        })
+        .catch(err => console.error("Error loading volunteers:", err));
+    }
+
+    function loadApplications() {
+      fetch("/api/admin/volunteers")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const tableBody = document.getElementById("applications-table");
+            tableBody.innerHTML = "";
+            
+            const pending = data.volunteers.filter(v => v.status === "Pending" && v.program_name);
+            
+            if (pending.length === 0) {
+              tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">No pending applications found.</td></tr>`;
+              return;
+            }
+
+            pending.forEach(v => {
+              tableBody.innerHTML += `
+                <tr>
+                  <td>${v.id}</td>
+                  <td><strong>${v.name}</strong></td>
+                  <td>${v.email}</td>
+                  <td>${v.phone}</td>
+                  <td>${v.city}</td>
+                  <td>${v.skills}</td>
+                  <td><span class="program-badge" style="background:#e0f7fa; color:#0f4c81; padding:4px 8px; border-radius:4px; font-size:0.85rem; font-weight:600;">${v.program_name}</span></td>
+                  <td>
+                    <button class="btn-action btn-success" onclick="updateStatus(${v.id}, 'Approved')" title="Approve">
+                      <i class="fa-solid fa-check"></i> Approve
+                    </button>
+                    <button class="btn-action btn-danger" onclick="updateStatus(${v.id}, 'Rejected')" title="Reject">
+                      <i class="fa-solid fa-xmark"></i> Reject
+                    </button>
+                  </td>
+                </tr>
+              `;
+            });
+          }
+        })
+        .catch(err => console.error("Error loading applications:", err));
+    }
+
+    function updateStatus(id, newStatus) {
+      if (!confirm(`Are you sure you want to set status to ${newStatus}?`)) return;
+
+      fetch("/api/admin/volunteers/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(data.message);
+          refreshDashboardData();
+          loadVolunteers();
+          loadApplications();
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch(err => console.error("Error updating status:", err));
+    }
+
+    function deleteVolunteer(id) {
+      if (!confirm("Are you sure you want to permanently delete this volunteer record?")) return;
+
+      fetch("/api/admin/volunteers/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(data.message);
+          refreshDashboardData();
+          loadVolunteers();
+          loadApplications();
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch(err => console.error("Error deleting volunteer:", err));
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      return new Date(value).toLocaleString();
+    }
+
+    function loadContactMessages() {
+      fetch("/api/admin/contact-messages")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) return;
+
+          const messages = data.messages;
+          const tableBody = document.getElementById("contact-messages-table");
+          const newCount = messages.filter(msg => msg.status === "New").length;
+          const contactedCount = messages.filter(msg => msg.status === "Contacted").length;
+
+          document.getElementById("report-total-contacts").textContent = messages.length;
+          document.getElementById("report-new-contacts").textContent = newCount;
+          document.getElementById("report-contacted-contacts").textContent = contactedCount;
+
+          tableBody.innerHTML = "";
+
+          if (messages.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 20px;">No contact messages found.</td></tr>`;
+            return;
+          }
+
+          messages.forEach(msg => {
+            const status = msg.status || "New";
+            const statusClass = status === "Contacted" ? "status-approved" : "status-pending";
+            const nextStatus = status === "Contacted" ? "New" : "Contacted";
+            const actionLabel = status === "Contacted" ? "Mark New" : "Mark Contacted";
+            const actionClass = status === "Contacted" ? "btn-secondary-action" : "btn-success";
+
+            tableBody.innerHTML += `
+              <tr>
+                <td>${msg.id}</td>
+                <td><strong>${escapeHtml(msg.name)}</strong></td>
+                <td><a href="mailto:${escapeHtml(msg.email)}">${escapeHtml(msg.email)}</a></td>
+                <td>${escapeHtml(msg.phone || "-")}</td>
+                <td>${escapeHtml(msg.subject)}</td>
+                <td class="message-cell">${escapeHtml(msg.message)}</td>
+                <td><span class="status-badge ${statusClass}">${escapeHtml(status)}</span></td>
+                <td>${formatDate(msg.created_at)}</td>
+                <td>
+                  <button class="btn-action ${actionClass}" onclick="updateContactStatus(${msg.id}, '${nextStatus}')">
+                    <i class="fa-solid fa-phone"></i> ${actionLabel}
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+        })
+        .catch(err => console.error("Error loading contact messages:", err));
+    }
+
+    function updateContactStatus(id, status) {
+      fetch("/api/admin/contact-messages/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          refreshDashboardData();
+          loadContactMessages();
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch(err => console.error("Error updating contact status:", err));
+    }
+
+    function loadPrograms() {
+      // Hide edit form container on reload
+      document.getElementById("edit-program-container").style.display = "none";
+
+      fetch("/api/admin/programs")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            allProgramsData = data.programs;
+            const container = document.getElementById("programs-list");
+            container.innerHTML = "";
+
+            if (data.programs.length === 0) {
+              container.innerHTML = `<p>No programs found.</p>`;
+              return;
+            }
+
+            data.programs.forEach(p => {
+              container.innerHTML += `
+                <div class="program-manage-card">
+                  <div class="card-info">
+                    <h3>${p.program_name}</h3>
+                    <p class="desc">${p.description}</p>
+                    <div class="card-meta">
+                      <span><i class="fa-solid fa-location-dot"></i> ${p.location}</span>
+                      <span><i class="fa-solid fa-clock"></i> ${p.duration}</span>
+                      <span><i class="fa-solid fa-briefcase"></i> ${p.mode}</span>
+                    </div>
+                  </div>
+                  <button class="btn-edit" onclick="showEditForm(${p.id})">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Details & Requirements
+                  </button>
+                </div>
+              `;
+            });
+          }
+        })
+        .catch(err => console.error("Error loading programs:", err));
+    }
+
+    function showEditForm(id) {
+      const p = allProgramsData.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById("edit-program-id").value = p.id;
+      document.getElementById("edit-program-name").value = p.program_name;
+      document.getElementById("edit-description").value = p.description || "";
+      document.getElementById("edit-mode").value = p.mode || "";
+      document.getElementById("edit-duration").value = p.duration || "";
+      document.getElementById("edit-hours").value = p.hours || "";
+      document.getElementById("edit-location").value = p.location || "";
+      document.getElementById("edit-requirements").value = p.requirements || "";
+      document.getElementById("edit-responsibilities").value = p.responsibilities || "";
+      document.getElementById("edit-benefits").value = p.benefits || "";
+
+      document.getElementById("edit-program-title").textContent = `Edit Details: ${p.program_name}`;
+      
+      const formContainer = document.getElementById("edit-program-container");
+      formContainer.style.display = "block";
+      
+      // Smooth scroll to edit form
+      formContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+      document.getElementById("edit-program-container").style.display = "none";
+    }
+
+    // Submit Edit Program Form
+    document.getElementById("edit-program-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("edit-program-id").value;
+      const description = document.getElementById("edit-description").value;
+      const mode = document.getElementById("edit-mode").value;
+      const duration = document.getElementById("edit-duration").value;
+      const hours = document.getElementById("edit-hours").value;
+      const location = document.getElementById("edit-location").value;
+      const requirements = document.getElementById("edit-requirements").value;
+      const responsibilities = document.getElementById("edit-responsibilities").value;
+      const benefits = document.getElementById("edit-benefits").value;
+
+      fetch("/api/admin/programs/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id, description, mode, duration, hours, location, requirements, responsibilities, benefits
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Program updated successfully!");
+          loadPrograms();
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch(err => console.error("Error updating program:", err));
+    });
+  </script>
+</body>
+</html>
